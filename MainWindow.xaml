@@ -1,0 +1,23 @@
+﻿<Window x:Class="KineosEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KineosEditor"
+        mc:Ignorable="d"
+        Height="320"
+        Width="480"
+        Topmost="True">
+    <Grid>
+        <avalonEdit:TextEditor x:Name="textEditor"
+                               Background="#2A2433"
+                               Foreground="#F3EBFF"
+                               FontSize="10pt"
+                               PreviewKeyDown="TextEditor_PreviewKeyDown"
+                               ShowLineNumbers="True"
+                               SyntaxHighlighting="Kineos"
+                               HorizontalScrollBarVisibility="Auto"
+                               VerticalScrollBarVisibility="Auto"/>
+    </Grid>
+</Window>

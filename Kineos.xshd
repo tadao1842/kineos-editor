@@ -1,0 +1,23 @@
+<SyntaxDefinition name="Kineos"
+  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  
+  <Color name="Descend" foreground="#AA75F5"/>
+  <Color name="Ascend" foreground="#FFB6B3"/>
+  <Color name="Lateral" foreground="#D6B9FE"/>
+  <Color name="Return" foreground="#ED655E"/>
+  <Color name="Question" fontStyle="italic"/>
+  <Color name="Answer" foreground="#AFA7B9"/>
+  <Color name="Fact"/>
+
+  <RuleSet>
+
+    <Rule color="Descend">^v</Rule>
+    <Rule color="Ascend">^\^</Rule>
+    <Rule color="Lateral">^&gt;</Rule>
+    <Rule color="Return">^&lt;</Rule>
+    <Rule color="Question">^\?.*$</Rule>
+    <Rule color="Answer">^\!.*$</Rule>
+    <Rule color="Fact">^=.*$</Rule>
+
+  </RuleSet>
+</SyntaxDefinition>
