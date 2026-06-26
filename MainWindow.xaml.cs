@@ -28,6 +28,7 @@ namespace KineosEditor
             }
 
             textEditor.FontFamily = new FontFamily(ConfigurationManager.AppSettings["FontFamily"]);
+            textEditor.TextArea.TextView.LinkTextForegroundBrush = Brushes.LightBlue;
         }
 
         private void TextEditor_PreviewKeyDown(object sender, KeyEventArgs e)
