@@ -1,23 +1,314 @@
-﻿<Window x:Class="KineosEditor.MainWindow"
+<Window x:Class="KineosEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:KineosEditor"
-        mc:Ignorable="d"
-        Height="320"
-        Width="480"
-        Topmost="True">
-    <Grid>
-        <avalonEdit:TextEditor x:Name="textEditor"
-                               Background="#2A2433"
-                               Foreground="#F3EBFF"
-                               FontSize="10pt"
-                               PreviewKeyDown="TextEditor_PreviewKeyDown"
-                               ShowLineNumbers="True"
-                               SyntaxHighlighting="Kineos"
-                               HorizontalScrollBarVisibility="Auto"
-                               VerticalScrollBarVisibility="Auto"/>
-    </Grid>
+        xmlns:search="clr-namespace:ICSharpCode.AvalonEdit.Search;assembly=ICSharpCode.AvalonEdit"
+        Title="Kineos Editor" Width="510" Height="350" MinWidth="430" MinHeight="240"
+        WindowStyle="None" AllowsTransparency="True" ResizeMode="CanResize"
+        Topmost="True" Background="Transparent" Foreground="#EAE9F5"
+        FontFamily="Segoe UI" UseLayoutRounding="True" Closing="Window_Closing">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <SolidColorBrush x:Key="EditorSurface" Color="#191D29"/>
+        <SolidColorBrush x:Key="Divider" Color="#34394D"/>
+        <SolidColorBrush x:Key="Muted" Color="#AFB5CE"/>
+        <SolidColorBrush x:Key="Accent" Color="#C2B2FF"/>
+
+        <Style x:Key="ToolbarButton" TargetType="ButtonBase">
+            <Setter Property="Foreground" Value="#EAE9F5"/>
+            <Setter Property="Background" Value="#252A3A"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Divider}"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="Margin" Value="0,0,3,0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ButtonBase">
+                        <Border x:Name="Surface" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
+                                CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="#363C54"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="#202436"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource Accent}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource ToolbarButton}">
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+                    <Setter Property="Background" Value="#302747"/>
+                    <Setter Property="BorderBrush" Value="#69578E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SearchField" TargetType="TextBox">
+            <Setter Property="Background" Value="#10131C"/>
+            <Setter Property="Foreground" Value="#EAE9F5"/>
+            <Setter Property="CaretBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="SelectionBrush" Value="#52427E"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Divider}"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+                </Trigger>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="BorderBrush" Value="#EE9A9A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="EditorSearchPanel" TargetType="search:SearchPanel">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="search:SearchPanel">
+                        <Border Width="370" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,5,0"
+                                Background="#212636" BorderBrush="{StaticResource Divider}"
+                                BorderThickness="1" CornerRadius="8" Padding="8">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="42"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="検索" VerticalAlignment="Center"/>
+                                <TextBox x:Name="PART_searchTextBox" Grid.Column="1" Style="{StaticResource SearchField}"
+                                         AutomationProperties.Name="検索文字列">
+                                    <TextBox.Text>
+                                        <Binding Path="SearchPattern" RelativeSource="{RelativeSource TemplatedParent}"
+                                                 UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <ExceptionValidationRule/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="↑" Style="{StaticResource ToolbarButton}" ToolTip="前の一致 (Shift+F3)"
+                                            AutomationProperties.Name="前の一致" Command="{x:Static search:SearchCommands.FindPrevious}"/>
+                                    <Button Content="↓" Style="{StaticResource ToolbarButton}" ToolTip="次の一致 (F3)"
+                                            AutomationProperties.Name="次の一致" Command="{x:Static search:SearchCommands.FindNext}"/>
+                                    <Button Content="×" Style="{StaticResource ToolbarButton}" Margin="0" ToolTip="検索を閉じる (Esc)"
+                                            AutomationProperties.Name="検索を閉じる" Command="{x:Static search:SearchCommands.CloseSearchPanel}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Row="1" Text="置換" Margin="0,5,0,0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="ReplacementTextBox" Grid.Row="1" Grid.Column="1" Margin="0,5,5,0"
+                                         Style="{StaticResource SearchField}" AutomationProperties.Name="置換文字列"
+                                         ToolTip="正規表現モードでは \1、\2 でキャプチャを参照できます"
+                                         PreviewKeyDown="ReplacementTextBox_PreviewKeyDown"/>
+                                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Button Content="置換" Style="{StaticResource ToolbarButton}" Click="Replace_Click"
+                                            ToolTip="一致を 1 件置換 (Enter)"/>
+                                    <Button Content="すべて置換" Style="{StaticResource ToolbarButton}" Margin="0"
+                                            Click="ReplaceAll_Click" ToolTip="文書内の一致をすべて置換"/>
+                                </StackPanel>
+                                <DockPanel Grid.Row="2" Grid.ColumnSpan="3" Margin="0,5,0,0">
+                                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="0,0,6,0">
+                                        <ToggleButton Content="Aa" ToolTip="大文字と小文字を区別" AutomationProperties.Name="大文字と小文字を区別"
+                                                      IsChecked="{Binding MatchCase, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <ToggleButton Content="単語" ToolTip="単語全体に一致" AutomationProperties.Name="単語全体に一致"
+                                                      IsChecked="{Binding WholeWords, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <ToggleButton Content=".*" ToolTip="正規表現" AutomationProperties.Name="正規表現"
+                                                      IsChecked="{Binding UseRegex, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                               ToolTip="{TemplateBinding Tag}"/>
+                                </DockPanel>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MessageButton" TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+            <Setter Property="MinWidth" Value="62"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+        </Style>
+        <Window x:Key="MessageWindow" x:Shared="False" Width="350" SizeToContent="Height"
+                WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize"
+                ShowInTaskbar="False" Background="Transparent" Foreground="#EAE9F5"
+                FontFamily="Segoe UI" UseLayoutRounding="True" KeyboardNavigation.TabNavigation="Cycle">
+            <Border Background="{StaticResource EditorSurface}" BorderBrush="{StaticResource Divider}"
+                    BorderThickness="1" CornerRadius="10" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Foreground="{StaticResource Accent}" FontWeight="SemiBold" FontSize="15"/>
+                    <ScrollViewer MaxHeight="180" Margin="0,8,0,14" VerticalScrollBarVisibility="Auto" Focusable="False"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <TextBlock Text="{Binding}" Foreground="{StaticResource Muted}" TextWrapping="Wrap"/>
+                    </ScrollViewer>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Button Content="保存" Tag="{x:Static MessageBoxResult.Yes}" Click="MessageChoice_Click" IsDefault="True"
+                                    Style="{StaticResource MessageButton}" Background="#453564" BorderBrush="#77639E"/>
+                            <Button Content="保存しない" Tag="{x:Static MessageBoxResult.No}" Click="MessageChoice_Click"
+                                    Style="{StaticResource MessageButton}"/>
+                            <Button Content="キャンセル" IsCancel="True" Style="{StaticResource MessageButton}"/>
+                        </StackPanel>
+                        <Button Content="閉じる" IsCancel="True" IsDefault="True" HorizontalAlignment="Right">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MessageButton}">
+                                    <Setter Property="Background" Value="#453564"/>
+                                    <Setter Property="BorderBrush" Value="#77639E"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Window>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Replace" Executed="OpenReplace_Executed"/>
+    </Window.CommandBindings>
+    <Border Background="#10131C" BorderThickness="1" BorderBrush="{StaticResource Divider}" CornerRadius="10">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Topmost, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                        <Setter Property="Opacity" Value="0.86"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid Margin="10,9">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Margin="0,0,0,7" Background="Transparent" MouseLeftButtonDown="Toolbar_MouseLeftButtonDown">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#342952" CornerRadius="6" Width="23" Height="23">
+                        <TextBlock Text="K" FontWeight="Bold" Foreground="{StaticResource Accent}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="Kineos" FontSize="14" FontWeight="SemiBold"
+                               Margin="6,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="開く" Command="ApplicationCommands.Open" ToolTip="ファイルを開く (Ctrl+O)"
+                            Style="{StaticResource ToolbarButton}"/>
+                    <Button Content="保存" Command="ApplicationCommands.Save" ToolTip="ファイルを保存 (Ctrl+S)"
+                            Style="{StaticResource ToolbarButton}" Background="#453564" BorderBrush="#77639E"/>
+                    <Button Content="検索" Click="Find_Click" ToolTip="テキストを検索 (Ctrl+F)"
+                            Style="{StaticResource ToolbarButton}"/>
+                    <ToggleButton Content="折り返し" ToolTip="長い行をウィンドウ幅で折り返す"
+                                  IsChecked="{Binding WordWrap, ElementName=textEditor, Mode=TwoWay}"/>
+                    <ToggleButton Content="固定" ToolTip="半透明でウィンドウを常に手前に表示"
+                                  IsChecked="{Binding Topmost, RelativeSource={RelativeSource AncestorType=Window}, Mode=TwoWay}"/>
+                    <Button Content="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                            Style="{StaticResource ToolbarButton}" Click="Minimize_Click"
+                            ToolTip="最小化" AutomationProperties.Name="最小化"/>
+                    <Button FontFamily="Segoe MDL2 Assets" FontSize="10" Click="ToggleMaximize_Click"
+                            ToolTip="最大化／元に戻す" AutomationProperties.Name="最大化／元に戻す">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                                <Setter Property="Content" Value="&#xE922;"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                                        <Setter Property="Content" Value="&#xE923;"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0"
+                            Style="{StaticResource ToolbarButton}" Click="Close_Click"
+                            ToolTip="閉じる" AutomationProperties.Name="閉じる"/>
+                </StackPanel>
+            </DockPanel>
+
+            <Border Grid.Row="1" Background="{StaticResource EditorSurface}" BorderBrush="{StaticResource Divider}"
+                    BorderThickness="1" CornerRadius="9">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Background="#212636" BorderBrush="{StaticResource Divider}"
+                            BorderThickness="0,0,0,1" CornerRadius="8,8,0,0" Padding="12,7">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Right" Background="#342952" CornerRadius="4" Padding="6,2">
+                                <TextBlock x:Name="fileType" Text="未定" Foreground="{StaticResource Accent}" FontSize="10"
+                                           FontWeight="Bold" MaxWidth="85" TextTrimming="CharacterEllipsis"/>
+                            </Border>
+                            <TextBlock x:Name="documentName" Text="無題" FontWeight="SemiBold" VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        </DockPanel>
+                    </Border>
+                    <avalonEdit:TextEditor x:Name="textEditor" Grid.Row="1" Margin="6,5,6,6"
+                                           Background="Transparent" Foreground="#F3EBFF"
+                                           FontSize="10pt" LineNumbersForeground="{StaticResource Muted}"
+                                           ShowLineNumbers="True" HorizontalScrollBarVisibility="Auto"
+                                           VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+            </Border>
+
+            <DockPanel Grid.Row="2" Margin="2,8,2,0" TextElement.Foreground="{StaticResource Muted}">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <TextBlock x:Name="caretStatus"/>
+                    <TextBlock x:Name="encodingStatus" Margin="14,0,0,0"/>
+                </StackPanel>
+                <TextBlock x:Name="documentStatus" TextTrimming="CharacterEllipsis" Margin="0,0,12,0"/>
+            </DockPanel>
+        </Grid>
+    </Border>
 </Window>

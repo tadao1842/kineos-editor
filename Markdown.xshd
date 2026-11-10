@@ -1,0 +1,30 @@
+<SyntaxDefinition name="Markdown" extensions=".md"
+                  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Heading" foreground="#C2B2FF" fontWeight="bold"/>
+  <Color name="Marker" foreground="#C2B2FF"/>
+  <Color name="Code" foreground="#A8DFBF"/>
+  <Color name="Link" foreground="#A6D7FF"/>
+  <Color name="Strong" foreground="#F4DEAC" fontWeight="bold"/>
+  <Color name="Emphasis" foreground="#F4DEAC" fontStyle="italic"/>
+  <Color name="Comment" foreground="#AFB5CE" fontStyle="italic"/>
+
+  <RuleSet>
+    <Span color="Code" multiline="true">
+      <Begin>^[ ]{0,3}&#96;{3,}[^&#96;]*$</Begin>
+      <End>^[ ]{0,3}&#96;{3,}[ \t]*$</End>
+    </Span>
+    <Span color="Code" multiline="true">
+      <Begin>^[ ]{0,3}~{3,}.*$</Begin>
+      <End>^[ ]{0,3}~{3,}[ \t]*$</End>
+    </Span>
+    <Span color="Comment" multiline="true" begin="&lt;!--" end="--&gt;"/>
+
+    <Rule color="Heading">^[ ]{0,3}[#]{1,6}(?:[ \t]+.*)?$</Rule>
+    <Rule color="Marker">^[ ]{0,3}(?:={2,}|-{2,})[ \t]*$</Rule>
+    <Rule color="Marker">^[ \t]*(?:&gt;|[-+*](?=[ \t])|\d{1,9}[.)](?=[ \t]))</Rule>
+    <Rule color="Code">(?&lt;!&#96;)(?&lt;ticks>&#96;+)(?!&#96;).+?(?&lt;!&#96;)\k&lt;ticks>(?!&#96;)</Rule>
+    <Rule color="Link">!?\[[^\]\r\n]+\](?:\([^)\r\n]+\)|\[[^\]\r\n]*\])</Rule>
+    <Rule color="Strong">(?&lt;strong>\*\*|__)(?=\S).+?(?&lt;=\S)\k&lt;strong></Rule>
+    <Rule color="Emphasis">(?&lt;!\w)(?&lt;emphasis>[*_])(?=\S).+?(?&lt;=\S)\k&lt;emphasis>(?!\w)</Rule>
+  </RuleSet>
+</SyntaxDefinition>

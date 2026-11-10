@@ -4,6 +4,23 @@
              xmlns:local="clr-namespace:KineosEditor"
              Startup="Application_Startup">
     <Application.Resources>
-         
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="#212636"/>
+            <Setter Property="Foreground" Value="#EAE9F5"/>
+            <Setter Property="BorderBrush" Value="#34394D"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>
