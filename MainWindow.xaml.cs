@@ -37,10 +37,16 @@ namespace KineosEditor
             markdownHighlighting = LoadHighlighting("Markdown");
 
             var fontName = ConfigurationManager.AppSettings["FontFamily"];
-            textEditor.FontFamily = string.IsNullOrWhiteSpace(fontName) ||
-                                    string.Equals(fontName.Trim(), "NOTONOTO35", StringComparison.OrdinalIgnoreCase)
+            if (string.IsNullOrWhiteSpace(fontName)) fontName = "NOTONOTO35";
+
+            // AvalonEdit passes FontFamily.Source to the native IME as a face name.
+            // Prefer the installed family so that the IME receives a name it can resolve.
+            var useEmbeddedFont = string.Equals(fontName.Trim(), "NOTONOTO35", StringComparison.OrdinalIgnoreCase) &&
+                                  !Fonts.SystemFontFamilies.Any(family =>
+                                      string.Equals(family.Source, "NOTONOTO35", StringComparison.OrdinalIgnoreCase));
+            textEditor.FontFamily = useEmbeddedFont
                 ? new FontFamily(new Uri("pack://application:,,,/"), "/KineosEditor;component/Fonts/#NOTONOTO35")
-                : new FontFamily(fontName);
+                : new FontFamily(fontName.Trim());
             textEditor.Options.HighlightCurrentLine = true;
 
             var textArea = textEditor.TextArea;
