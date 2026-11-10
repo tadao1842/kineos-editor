@@ -1,12 +1,12 @@
 <SyntaxDefinition name="Markdown" extensions=".md"
                   xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-  <Color name="Heading" foreground="#C2B2FF" fontWeight="bold"/>
-  <Color name="Marker" foreground="#C2B2FF"/>
+  <Color name="Heading" foreground="#D5C5EF" fontWeight="bold"/>
+  <Color name="Marker" foreground="#D5C5EF"/>
   <Color name="Code" foreground="#A8DFBF"/>
-  <Color name="Link" foreground="#A6D7FF"/>
+  <Color name="Link" foreground="#D3BEFA"/>
   <Color name="Strong" foreground="#F4DEAC" fontWeight="bold"/>
   <Color name="Emphasis" foreground="#F4DEAC" fontStyle="italic"/>
-  <Color name="Comment" foreground="#AFB5CE" fontStyle="italic"/>
+  <Color name="Comment" foreground="#B9B0C9" fontStyle="italic"/>
 
   <RuleSet>
     <Span color="Code" multiline="true">

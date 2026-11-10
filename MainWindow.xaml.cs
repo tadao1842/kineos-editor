@@ -40,14 +40,15 @@ namespace KineosEditor
             textEditor.Options.HighlightCurrentLine = true;
 
             var textArea = textEditor.TextArea;
-            textArea.TextView.LinkTextForegroundBrush = Brushes.LightBlue;
-            textArea.TextView.CurrentLineBackground = new SolidColorBrush(Color.FromRgb(36, 41, 58));
-            textArea.SelectionBrush = new SolidColorBrush(Color.FromRgb(82, 66, 126));
+            textArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromRgb(211, 190, 250));
+            textArea.TextView.CurrentLineBackground = new SolidColorBrush(Color.FromRgb(43, 35, 53));
+            textArea.SelectionBrush = new SolidColorBrush(Color.FromRgb(103, 81, 126));
             textArea.SelectionForeground = Brushes.White;
             searchPanel = SearchPanel.Install(textEditor);
             searchPanel.Style = (Style)FindResource("EditorSearchPanel");
             searchPanel.Localization = new SearchLocalization();
             searchPanel.MarkerBrush = new SolidColorBrush(Color.FromRgb(113, 85, 38));
+            searchPanel.MarkerPen = new Pen(new SolidColorBrush(Color.FromRgb(189, 149, 105)), 1);
             searchPanel.SearchOptionsChanged += (sender, e) => searchPanel.Tag = null;
 
             textArea.Caret.PositionChanged += (sender, e) => UpdateCaretStatus();
