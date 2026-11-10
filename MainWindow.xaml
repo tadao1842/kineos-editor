@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:search="clr-namespace:ICSharpCode.AvalonEdit.Search;assembly=ICSharpCode.AvalonEdit"
-        Title="Kineos Editor" Width="510" Height="350" MinWidth="430" MinHeight="240"
+        Title="Kineos Editor" Icon="Kineos.ico" Width="510" Height="350" MinWidth="430" MinHeight="240"
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanResize"
         Topmost="True" Background="Transparent" Foreground="#F5F1FA"
         FontFamily="Segoe UI" UseLayoutRounding="True" Closing="Window_Closing">
