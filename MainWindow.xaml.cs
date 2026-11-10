@@ -36,7 +36,11 @@ namespace KineosEditor
             kineosHighlighting = LoadHighlighting("Kineos");
             markdownHighlighting = LoadHighlighting("Markdown");
 
-            textEditor.FontFamily = new FontFamily(ConfigurationManager.AppSettings["FontFamily"]);
+            var fontName = ConfigurationManager.AppSettings["FontFamily"];
+            textEditor.FontFamily = string.IsNullOrWhiteSpace(fontName) ||
+                                    string.Equals(fontName.Trim(), "NOTONOTO35", StringComparison.OrdinalIgnoreCase)
+                ? new FontFamily(new Uri("pack://application:,,,/"), "/KineosEditor;component/Fonts/#NOTONOTO35")
+                : new FontFamily(fontName);
             textEditor.Options.HighlightCurrentLine = true;
 
             var textArea = textEditor.TextArea;

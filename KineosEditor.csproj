@@ -95,6 +95,11 @@
     <EmbeddedResource Include="Kineos.xshd" />
     <EmbeddedResource Include="Markdown.xshd" />
     <Resource Include="Kineos.ico" />
+    <Resource Include="Fonts\NOTONOTO35-Regular.ttf" />
+    <Resource Include="Fonts\NOTONOTO35-Bold.ttf" />
+    <Content Include="Fonts\NOTONOTO-LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
